@@ -15,13 +15,9 @@ dotenv.config();
 // Enable CORS for all routes
 app.use(cors());
 
-// All other GET requests not handled before will return the React app
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-
 // SSE Endpoint
 app.get("/recipeStream", (req, res) => {
+  console.log("HIT");
   const { ingredients, mealType, cuisine, cookingTime, complexity } = req.query;
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -81,6 +77,11 @@ app.get("/recipeStream", (req, res) => {
   });
 });
 
+// All other GET requests not handled before will return the React app
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
 async function fetchOpenAICompletionsStream(messages, callback) {
   //NOTE - Refactor this to a .env file before deployment!
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -105,5 +106,5 @@ async function fetchOpenAICompletionsStream(messages, callback) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server listening on port", PORT);
 });
